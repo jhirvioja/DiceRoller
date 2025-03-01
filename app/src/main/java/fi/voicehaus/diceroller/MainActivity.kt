@@ -23,7 +23,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -105,7 +104,7 @@ fun DiceWithButtonAndImage() {
         5 -> R.drawable.dice_5
         else -> R.drawable.dice_6
     }
-    
+
     Column(
         modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -120,11 +119,20 @@ fun DiceWithButtonAndImage() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
-                modifier = Modifier.height(42.dp), onClick = {
+                modifier = Modifier.height(42.dp),
+                onClick = {
                     if (!isRolling) {
                         isRolling = true
                         coroutineScope.launch {
-                            delay(2000)
+                            val diceRolls = listOf(1, 2, 3, 4, 5, 6)
+                            val delayTimes =
+                                listOf(50L, 50L, 100L, 100L, 350L, 400L)
+
+                            for (i in diceRolls.indices) {
+                                result = diceRolls[i]
+                                delay(delayTimes[i])
+                            }
+
                             result = (1..6).random()
                             isRolling = false
                         }
