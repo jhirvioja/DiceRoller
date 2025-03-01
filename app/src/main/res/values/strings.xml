@@ -2,4 +2,5 @@
     <string name="app_name">Dice Roller</string>
     <string name="roll">Roll</string>
     <string name="view_results">View Results</string>
+    <string name="back_button">Go Back to Main Screen</string>
 </resources>
