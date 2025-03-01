@@ -47,9 +47,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+data class DiceRoll(
+    val timestamp: Long, val result: Int
+)
+
 enum class DiceRollScreen {
-    Start,
-    Results,
+    Start, Results,
 }
 
 @Preview(showBackground = true)
@@ -61,17 +64,13 @@ fun DiceRollerApp(
     val currentScreen =
         DiceRollScreen.valueOf(backStackEntry?.destination?.route ?: DiceRollScreen.Start.name)
 
-    Scaffold(
-        topBar = {
-            DiceRollerTopAppBar(
-                currentScreen = currentScreen,
-                canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
-            )
-        }) { paddingValues ->
+    Scaffold(topBar = {
+        DiceRollerTopAppBar(currentScreen = currentScreen,
+            canNavigateBack = navController.previousBackStackEntry != null,
+            navigateUp = { navController.navigateUp() })
+    }) { paddingValues ->
         NavHost(
-            navController = navController,
-            startDestination = DiceRollScreen.Start.name
+            navController = navController, startDestination = DiceRollScreen.Start.name
         ) {
             composable(route = DiceRollScreen.Start.name) {
                 StartDiceRollScreen(
@@ -82,7 +81,17 @@ fun DiceRollerApp(
                 )
             }
             composable(route = DiceRollScreen.Results.name) {
+                val currentTime = System.currentTimeMillis()
+
+                val sampleRolls = List(32) { index ->
+                    DiceRoll(
+                        timestamp = currentTime - (index * 30_000L),
+                        result = (1..6).random()
+                    )
+                }
+
                 ShowResultsScreen(
+                    rolls = sampleRolls,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues),
@@ -108,22 +117,20 @@ fun DiceRollerTopAppBar(
                 )
             }
         }
-    },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary,
-        ), title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = if (currentScreen.name == DiceRollScreen.Results.name) {
-                        currentScreen.name
-                    } else {
-                        stringResource(R.string.app_name)
-                    },
-                    style = MaterialTheme.typography.headlineSmall
-                )
-            }
-        })
+    }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        titleContentColor = MaterialTheme.colorScheme.primary,
+    ), title = {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = if (currentScreen.name == DiceRollScreen.Results.name) {
+                    currentScreen.name
+                } else {
+                    stringResource(R.string.app_name)
+                }, style = MaterialTheme.typography.headlineSmall
+            )
+        }
+    })
 }

@@ -31,8 +31,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun StartDiceRollScreen(
-    onShowResultsClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    onShowResultsClicked: () -> Unit, modifier: Modifier = Modifier
 ) {
     var result by remember { mutableIntStateOf(1) }
     var isRolling by remember { mutableStateOf(false) }
@@ -61,14 +60,12 @@ fun StartDiceRollScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
-                modifier = Modifier.height(42.dp),
-                onClick = {
+                modifier = Modifier.height(42.dp), onClick = {
                     if (!isRolling) {
                         isRolling = true
                         coroutineScope.launch {
                             val diceRolls = listOf(1, 2, 3, 4, 5, 6)
-                            val delayTimes =
-                                listOf(50L, 50L, 100L, 100L, 350L, 400L)
+                            val delayTimes = listOf(50L, 50L, 100L, 100L, 350L, 400L)
 
                             for (i in diceRolls.indices) {
                                 result = diceRolls[i]
@@ -101,7 +98,5 @@ fun StartDiceRollScreen(
 @Preview
 @Composable
 fun StartDiceRollScreenPreview() {
-    StartDiceRollScreen(
-        onShowResultsClicked = {}
-    )
+    StartDiceRollScreen(onShowResultsClicked = {})
 }
