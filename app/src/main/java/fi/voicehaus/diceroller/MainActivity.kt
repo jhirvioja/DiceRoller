@@ -3,9 +3,7 @@ package fi.voicehaus.diceroller
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -49,9 +47,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-enum class DiceRollScreen(@StringRes val title: Int) {
-    Start(title = R.string.app_name),
-    Results(title = R.string.view_results),
+enum class DiceRollScreen {
+    Start,
+    Results,
 }
 
 @Preview(showBackground = true)
