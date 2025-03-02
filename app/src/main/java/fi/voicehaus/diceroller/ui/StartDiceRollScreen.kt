@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 fun StartDiceRollScreen(
     result: MutableIntState,
     onRollDice: (Int) -> Unit,
-    onShowResultsClicked: () -> Unit,
+    onViewResultsClicked: () -> Unit,
     isRolling: Boolean,
     setIsRolling: (Boolean) -> Unit,
     modifier: Modifier = Modifier
@@ -98,7 +98,7 @@ fun StartDiceRollScreen(
                 }
             }
             Spacer(modifier = Modifier.width(8.dp))
-            OutlinedButton(onClick = onShowResultsClicked) {
+            OutlinedButton(onClick = onViewResultsClicked) {
                 Text(stringResource(R.string.view_results))
             }
         }
@@ -114,7 +114,7 @@ fun StartDiceRollScreenPreview() {
     StartDiceRollScreen(
         result = result,
         onRollDice = { result.intValue = it },
-        onShowResultsClicked = {},
+        onViewResultsClicked = {},
         setIsRolling = { newIsRolling -> isRolling = newIsRolling },
         isRolling = isRolling
     )

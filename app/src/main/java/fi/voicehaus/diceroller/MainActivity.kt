@@ -32,7 +32,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import fi.voicehaus.diceroller.ui.ShowResultsScreen
+import fi.voicehaus.diceroller.ui.ViewResultsScreen
 import fi.voicehaus.diceroller.ui.StartDiceRollScreen
 import fi.voicehaus.diceroller.ui.theme.DiceRollerTheme
 
@@ -92,7 +92,7 @@ fun DiceRollerApp(
                             results.value += DiceRoll(System.currentTimeMillis(), newResult)
                         }
                     },
-                    onShowResultsClicked = { navController.navigate(DiceRollScreen.Results.name) },
+                    onViewResultsClicked = { navController.navigate(DiceRollScreen.Results.name) },
                     isRolling = isRolling,
                     setIsRolling = { newIsRolling -> isRolling = newIsRolling },
                     modifier = Modifier
@@ -103,7 +103,7 @@ fun DiceRollerApp(
             composable(
                 route = DiceRollScreen.Results.name
             ) {
-                ShowResultsScreen(
+                ViewResultsScreen(
                     rolls = results,
                     modifier = Modifier
                         .fillMaxSize()

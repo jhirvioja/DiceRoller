@@ -30,7 +30,7 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun ShowResultsScreen(
+fun ViewResultsScreen(
     modifier: Modifier = Modifier,
     rolls: MutableState<List<DiceRoll>>
 ) {
@@ -124,7 +124,7 @@ fun DiceRollItem(roll: DiceRoll) {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewShowResultsScreen() {
+fun PreviewViewResultsScreen() {
     val sampleRolls = listOf(
         DiceRoll(timestamp = System.currentTimeMillis(), result = 3),
         DiceRoll(timestamp = System.currentTimeMillis() - 60000, result = 6),
@@ -133,5 +133,5 @@ fun PreviewShowResultsScreen() {
 
     val results = remember { mutableStateOf(sampleRolls) }
 
-    ShowResultsScreen(rolls = results)
+    ViewResultsScreen(rolls = results)
 }
