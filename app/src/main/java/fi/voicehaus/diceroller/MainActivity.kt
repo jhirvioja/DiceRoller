@@ -19,6 +19,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -64,34 +68,43 @@ fun DiceRollerApp(
     val currentScreen =
         DiceRollScreen.valueOf(backStackEntry?.destination?.route ?: DiceRollScreen.Start.name)
 
+    var isRolling by remember { mutableStateOf(false) }
+    val result = remember { mutableIntStateOf(1) }
+    val results = remember { mutableStateOf<List<DiceRoll>>(emptyList()) }
+
     Scaffold(topBar = {
-        DiceRollerTopAppBar(currentScreen = currentScreen,
+        DiceRollerTopAppBar(
+            currentScreen = currentScreen,
             canNavigateBack = navController.previousBackStackEntry != null,
             navigateUp = { navController.navigateUp() })
     }) { paddingValues ->
         NavHost(
             navController = navController, startDestination = DiceRollScreen.Start.name
         ) {
-            composable(route = DiceRollScreen.Start.name) {
+            composable(
+                route = DiceRollScreen.Start.name
+            ) {
                 StartDiceRollScreen(
+                    result = result,
+                    onRollDice = { newResult ->
+                        result.intValue = newResult
+                        if (isRolling.not()) {
+                            results.value += DiceRoll(System.currentTimeMillis(), newResult)
+                        }
+                    },
                     onShowResultsClicked = { navController.navigate(DiceRollScreen.Results.name) },
+                    isRolling = isRolling,
+                    setIsRolling = { newIsRolling -> isRolling = newIsRolling },
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues),
                 )
             }
-            composable(route = DiceRollScreen.Results.name) {
-                val currentTime = System.currentTimeMillis()
-
-                val sampleRolls = List(32) { index ->
-                    DiceRoll(
-                        timestamp = currentTime - (index * 30_000L),
-                        result = (1..6).random()
-                    )
-                }
-
+            composable(
+                route = DiceRollScreen.Results.name
+            ) {
                 ShowResultsScreen(
-                    rolls = sampleRolls,
+                    rolls = results,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues),
@@ -108,29 +121,30 @@ fun DiceRollerTopAppBar(
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
 ) {
-    CenterAlignedTopAppBar(navigationIcon = {
-        if (canNavigateBack) {
-            IconButton(onClick = navigateUp) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back_button)
+    CenterAlignedTopAppBar(
+        navigationIcon = {
+            if (canNavigateBack) {
+                IconButton(onClick = navigateUp) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back_button)
+                    )
+                }
+            }
+        }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ), title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = if (currentScreen.name == DiceRollScreen.Results.name) {
+                        currentScreen.name
+                    } else {
+                        stringResource(R.string.app_name)
+                    }, style = MaterialTheme.typography.headlineSmall
                 )
             }
-        }
-    }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-        titleContentColor = MaterialTheme.colorScheme.primary,
-    ), title = {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = if (currentScreen.name == DiceRollScreen.Results.name) {
-                    currentScreen.name
-                } else {
-                    stringResource(R.string.app_name)
-                }, style = MaterialTheme.typography.headlineSmall
-            )
-        }
-    })
+        })
 }

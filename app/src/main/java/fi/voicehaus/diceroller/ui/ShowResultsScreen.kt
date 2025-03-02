@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,10 +29,11 @@ import java.util.Locale
 
 @Composable
 fun ShowResultsScreen(
-    modifier: Modifier = Modifier, rolls: List<DiceRoll>
+    modifier: Modifier = Modifier,
+    rolls: MutableState<List<DiceRoll>>
 ) {
-    val casts = rolls.size
-    val odds = rolls.count { it.result % 2 != 0 }
+    val casts = rolls.value.size
+    val odds = rolls.value.count { it.result % 2 != 0 }
     val evens = casts - odds
 
     Column(
@@ -72,7 +75,7 @@ fun ShowResultsScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            items(rolls) { roll ->
+            items(rolls.value) { roll ->
                 DiceRollItem(roll)
             }
         }
@@ -124,5 +127,7 @@ fun PreviewShowResultsScreen() {
         DiceRoll(timestamp = System.currentTimeMillis() - 120000, result = 1)
     )
 
-    ShowResultsScreen(rolls = sampleRolls)
+    val results = remember { mutableStateOf(sampleRolls) }
+
+    ShowResultsScreen(rolls = results)
 }

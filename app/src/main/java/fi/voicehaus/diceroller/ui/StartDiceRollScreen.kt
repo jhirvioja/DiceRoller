@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -31,13 +32,16 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun StartDiceRollScreen(
-    onShowResultsClicked: () -> Unit, modifier: Modifier = Modifier
+    result: MutableIntState,
+    onRollDice: (Int) -> Unit,
+    onShowResultsClicked: () -> Unit,
+    isRolling: Boolean,
+    setIsRolling: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    var result by remember { mutableIntStateOf(1) }
-    var isRolling by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
-    val imageResource = when (result) {
+    val imageResource = when (result.intValue) {
         1 -> R.drawable.dice_1
         2 -> R.drawable.dice_2
         3 -> R.drawable.dice_3
@@ -52,31 +56,37 @@ fun StartDiceRollScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(imageResource), contentDescription = result.toString()
+            painter = painterResource(imageResource),
+            contentDescription = result.intValue.toString()
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(
+            modifier = Modifier.height(16.dp)
+        )
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
-                modifier = Modifier.height(42.dp), onClick = {
+                modifier = Modifier.height(42.dp),
+                onClick = {
                     if (!isRolling) {
-                        isRolling = true
+                        setIsRolling(true)
                         coroutineScope.launch {
-                            val diceRolls = listOf(1, 2, 3, 4, 5, 6)
                             val delayTimes = listOf(50L, 50L, 100L, 100L, 350L, 400L)
 
-                            for (i in diceRolls.indices) {
-                                result = diceRolls[i]
-                                delay(delayTimes[i])
+                            for (time in delayTimes) {
+                                val fakeRoll = (1..6).random()
+                                onRollDice(fakeRoll)
+                                delay(time)
                             }
 
-                            result = (1..6).random()
-                            isRolling = false
+                            val finalResult = (1..6).random()
+                            setIsRolling(false)
+                            onRollDice(finalResult)
                         }
                     }
-                }, enabled = !isRolling
+                },
+                enabled = !isRolling
             ) {
                 if (isRolling) {
                     CircularProgressIndicator(
@@ -98,5 +108,14 @@ fun StartDiceRollScreen(
 @Preview
 @Composable
 fun StartDiceRollScreenPreview() {
-    StartDiceRollScreen(onShowResultsClicked = {})
+    var isRolling by remember { mutableStateOf(false) }
+    val result = remember { mutableIntStateOf(1) }
+
+    StartDiceRollScreen(
+        result = result,
+        onRollDice = { result.intValue = it },
+        onShowResultsClicked = {},
+        setIsRolling = { newIsRolling -> isRolling = newIsRolling },
+        isRolling = isRolling
+    )
 }
