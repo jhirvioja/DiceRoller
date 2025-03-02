@@ -15,7 +15,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,10 +33,10 @@ import java.util.Locale
 @Composable
 fun ViewResultsScreen(
     modifier: Modifier = Modifier,
-    rolls: MutableState<List<DiceRoll>>
+    rolls: List<DiceRoll>
 ) {
-    val casts = rolls.value.size
-    val odds = rolls.value.count { it.result % 2 != 0 }
+    val casts = rolls.size
+    val odds = rolls.count { it.result % 2 != 0 }
     val evens = casts - odds
 
     Column(
@@ -78,7 +78,7 @@ fun ViewResultsScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            val sortedRolls = rolls.value.sortedByDescending { it.timestamp }
+            val sortedRolls = rolls.sortedByDescending { it.timestamp }
 
             itemsIndexed(sortedRolls) { index, roll ->
                 when (index) {
@@ -144,7 +144,7 @@ fun PreviewViewResultsScreen() {
         DiceRoll(timestamp = System.currentTimeMillis() - 120000, result = 1)
     )
 
-    val results = remember { mutableStateOf(sampleRolls) }
+    val results by remember { mutableStateOf(sampleRolls) }
 
     ViewResultsScreen(rolls = results)
 }

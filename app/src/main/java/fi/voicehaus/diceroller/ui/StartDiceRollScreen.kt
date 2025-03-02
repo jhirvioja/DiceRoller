@@ -13,7 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +31,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun StartDiceRollScreen(
-    result: MutableIntState,
+    result: Int,
     onRollDice: (Int) -> Unit,
     onViewResultsClicked: () -> Unit,
     isRolling: Boolean,
@@ -41,7 +40,7 @@ fun StartDiceRollScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    val imageResource = when (result.intValue) {
+    val imageResource = when (result) {
         1 -> R.drawable.dice_1
         2 -> R.drawable.dice_2
         3 -> R.drawable.dice_3
@@ -57,7 +56,7 @@ fun StartDiceRollScreen(
     ) {
         Image(
             painter = painterResource(imageResource),
-            contentDescription = result.intValue.toString()
+            contentDescription = result.toString()
         )
         Spacer(
             modifier = Modifier.height(16.dp)
@@ -109,11 +108,11 @@ fun StartDiceRollScreen(
 @Composable
 fun StartDiceRollScreenPreview() {
     var isRolling by remember { mutableStateOf(false) }
-    val result = remember { mutableIntStateOf(1) }
+    var result by remember { mutableIntStateOf(1) }
 
     StartDiceRollScreen(
         result = result,
-        onRollDice = { result.intValue = it },
+        onRollDice = { result = it },
         onViewResultsClicked = {},
         setIsRolling = { newIsRolling -> isRolling = newIsRolling },
         isRolling = isRolling

@@ -69,8 +69,8 @@ fun DiceRollerApp(
         DiceRollScreen.valueOf(backStackEntry?.destination?.route ?: DiceRollScreen.Start.name)
 
     var isRolling by remember { mutableStateOf(false) }
-    val result = remember { mutableIntStateOf(1) }
-    val results = remember { mutableStateOf<List<DiceRoll>>(emptyList()) }
+    var result by remember { mutableIntStateOf(1) }
+    var results by remember { mutableStateOf<List<DiceRoll>>(emptyList()) }
 
     Scaffold(topBar = {
         DiceRollerTopAppBar(
@@ -87,9 +87,9 @@ fun DiceRollerApp(
                 StartDiceRollScreen(
                     result = result,
                     onRollDice = { newResult ->
-                        result.intValue = newResult
+                        result = newResult
                         if (isRolling.not()) {
-                            results.value += DiceRoll(System.currentTimeMillis(), newResult)
+                            results += DiceRoll(System.currentTimeMillis(), newResult)
                         }
                     },
                     onViewResultsClicked = { navController.navigate(DiceRollScreen.Results.name) },
