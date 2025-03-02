@@ -19,10 +19,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fi.voicehaus.diceroller.DiceRoll
+import fi.voicehaus.diceroller.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -60,12 +62,12 @@ fun ShowResultsScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Result",
+                text = stringResource(R.string.result),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = "Time",
+                text = stringResource(R.string.timestamp),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.End
@@ -75,7 +77,9 @@ fun ShowResultsScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            items(rolls.value) { roll ->
+            val sortedRolls = rolls.value.sortedByDescending { it.timestamp }
+
+            items(sortedRolls) { roll ->
                 DiceRollItem(roll)
             }
         }
