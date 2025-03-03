@@ -20,4 +20,6 @@ cd <project-directory>
 
 ### 4. Build and run the project  
 - Click the **Run** ▶️ button in Android Studio. Or go to **Run** -> **Run 'app'**.
-  
+
+## Demo video
+https://github.com/user-attachments/assets/36e76356-db48-400f-a6c2-36bc4752e15c
