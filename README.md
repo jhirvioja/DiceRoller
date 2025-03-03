@@ -9,8 +9,7 @@ Download and install [Android Studio](https://developer.android.com/studio) if y
 
 ### 2. Clone the repository
 ```
-git clone <repository-url>
-cd <project-directory>
+git clone https://github.com/jhirvioja/DiceRoller.git
 ```
 
 ### 3. Open the project  
